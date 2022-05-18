@@ -1,0 +1,55 @@
+---
+# tasks file for vim
+- name: Make shure that git and vim is installed.
+  ansible.builtin.dnf:
+    name:
+      - vim
+      - git
+    state: present
+    update_cache: true
+  become: true
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Make shure that git and vim is installed.
+  ansible.builtin.apt:
+    name:
+      - vim
+      - git
+    state: present
+    update_cache: true
+  become: true
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Create directory's for vim.
+  ansible.builtin.file:
+    path: ~/.vim/pack/vendor/start
+    mode: 0755
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    state: directory
+  become: true
+  become_user: "{{ item }}"
+  loop: "{{ vim_user }}"
+
+- name: Deploy plugins.
+  ansible.builtin.git:
+    dest: "~/.vim/pack/vendor/start/{{ item.1.0 }}"
+    repo: "{{ item.1.1 }}"
+    clone: true
+    update: true
+    recursive: no
+  become: true
+  become_user: "{{ item.0 }}"
+  loop: "{{ vim_user | product(vim_plugins | zip(vim_plugin_urls)) | list }}"
+  when: vim_plugins | length > 0
+
+- name: Create .vimrc file from template.
+  ansible.builtin.template:
+    src: vimrc.j2
+    dest: ~/.vimrc
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  become_user: "{{ item }}"
+  loop: "{{ vim_user }}"

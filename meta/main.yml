@@ -1,0 +1,21 @@
+galaxy_info:
+  role_name: vim
+  author: caynevejvoda
+  description: Vim for Linux.
+  license: license (MIT)
+  min_ansible_version: 2.4
+  platforms:
+    - name: EL
+      versions:
+        - 8
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+  galaxy_tags:
+    - system
+    - server
