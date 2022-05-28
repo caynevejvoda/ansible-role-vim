@@ -47,8 +47,8 @@
   ansible.builtin.template:
     src: vimrc.j2
     dest: ~/.vimrc
-    owner: root
-    group: root
+    owner: "{{ item }}"
+    group: "{{ item }}"
     mode: 0644
   become: true
   become_user: "{{ item }}"
